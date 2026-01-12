@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext";
 import { ArrowLeft, Command } from "lucide-react";
 
 export default function Auth() {
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
   const containerRef = useRef(null);
   const imageRef = useRef(null);
   const formRef = useRef(null);
@@ -49,8 +50,8 @@ export default function Auth() {
 
     try {
       const endpoint = mode === "signup"
-          ? "http://localhost:5000/api/auth/signup"
-          : "http://localhost:5000/api/auth/login";
+          ? `${BASE_URL}/api/auth/signup`
+          : `${BASE_URL}/api/auth/login`;
 
       const payload = mode === "signup"
           ? formData

@@ -127,7 +127,7 @@ export const forgotPasswordController = async (req, res) => {
 
     await user.save();
 
-    const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
+    const resetUrl = `https://minidrive-two.vercel.app/reset-password/${resetToken}`;
 
     const html = `
       <h2>Password Reset</h2>
