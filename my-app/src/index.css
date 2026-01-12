@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Anton';
+  src: url('/fonts/Anton-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap; /* Prevents text from being invisible while loading */
+}
+
+@theme {
+  /* This allows you to use font-anton in your HTML */
+  --font-anton: "Anton", sans-serif;
+}
+
+@layer base {
+  .font-anton {
+    font-family: var(--font-anton);
+    text-transform: uppercase;
+  }
+}
