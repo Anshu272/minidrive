@@ -41,8 +41,8 @@ export const signupController = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: "strict",
-      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      secure:true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     }).status(201).json({
       message: "Signup successful",
@@ -83,8 +83,8 @@ export const loginController = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: "strict",
-      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      secure:true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     }).status(200).json({
       message: "Login successful",
@@ -200,8 +200,8 @@ export const logoutController = async (req, res) => {
     // Login used: httpOnly: true, sameSite: "strict", secure: process.env...
     res.clearCookie("token", {
       httpOnly: true,
-      sameSite: "strict", // matched from login
-      secure: process.env.NODE_ENV === "production", // matched from login
+      sameSite: "none", // matched from login
+      secure:true, // matched from login
       path: "/", 
     });
 
