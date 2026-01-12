@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { Upload as UploadIcon, FileText, ImageIcon, X, CheckCircle2, AlertCircle, ShieldCheck } from "lucide-react";
 
 export default function Upload() {
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState("idle");
@@ -31,7 +32,7 @@ export default function Upload() {
 
     try {
       setStatus("uploading");
-      const res = await fetch("http://localhost:5000/api/files/upload", {
+      const res = await fetch(`${BASE_URL}/api/files/upload`, {
         method: "POST",
         body: formData,
         credentials: "include",

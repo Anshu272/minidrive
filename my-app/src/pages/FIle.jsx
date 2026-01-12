@@ -13,6 +13,7 @@ import {
 import { Modal } from "../components/Modal";
 
 export default function SharedFile() {
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -47,7 +48,7 @@ export default function SharedFile() {
   /* ================= FETCH DATA ================= */
   const fetchFile = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/files/showfile/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/files/showfile/${id}`, {
         credentials: "include",
       });
       if (res.status === 401) return navigate("/auth");
@@ -118,7 +119,7 @@ export default function SharedFile() {
     if (!renameValue || renameValue === file.originalName) return closeModal();
     setIsUpdating(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/files/rename/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/files/rename/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ newName: renameValue }),
@@ -135,7 +136,7 @@ export default function SharedFile() {
   const confirmDelete = async () => {
     setIsUpdating(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/files/delete/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/files/delete/${id}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -152,7 +153,7 @@ export default function SharedFile() {
     if (!targetRevokeId) return;
     setIsUpdating(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/files/revoke/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/files/revoke/${id}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId: targetRevokeId }),
@@ -221,7 +222,7 @@ export default function SharedFile() {
     formData.append("file", newFile);
     setIsUpdating(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/files/update-content/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/files/update-content/${id}`, {
         method: "PUT",
         body: formData,
         credentials: "include",
@@ -236,7 +237,7 @@ export default function SharedFile() {
     e.preventDefault();
     setIsUpdating(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/files/share/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/files/share/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: newUserEmail, role: newUserRole }),

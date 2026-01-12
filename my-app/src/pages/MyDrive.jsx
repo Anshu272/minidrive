@@ -13,6 +13,7 @@ import {
 import { Modal } from "../components/Modal"; 
 
 export default function MyDrive() {
+    const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
     const [files, setFiles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -34,7 +35,7 @@ export default function MyDrive() {
     /* ================= FETCH DATA ================= */
     const fetchFiles = async () => {
         try {
-            const res = await fetch("http://localhost:5000/api/files/my-files", {
+            const res = await fetch(`${BASE_URL}/api/files/my-files`, {
                 credentials: "include",
             });
             const data = await res.json();
@@ -53,7 +54,7 @@ export default function MyDrive() {
     const confirmDelete = async (id) => {
         setIsActionLoading(true);
         try {
-            const res = await fetch(`http://localhost:5000/api/files/delete/${id}`, {
+            const res = await fetch(`${BASE_URL}/api/files/delete/${id}`, {
                 method: "DELETE",
                 credentials: "include",
             });

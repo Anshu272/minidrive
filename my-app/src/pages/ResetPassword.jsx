@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 
 export default function ResetPassword() {
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
   const { token } = useParams();
 
   const [password, setPassword] = useState("");
@@ -28,7 +29,7 @@ export default function ResetPassword() {
     setLoading(true);
     try {
       const res = await fetch(
-        `http://localhost:5000/api/auth/reset-password/${token}`,
+        `${BASE_URL}/api/auth/reset-password/${token}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

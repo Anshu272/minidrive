@@ -13,6 +13,7 @@ import {
 import { Modal } from "../components/Modal"; 
 
 export default function DashboardLayout() {
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
   const navigate = useNavigate();
   const userString = localStorage.getItem("user");
   const user = userString ? JSON.parse(userString) : null;
@@ -24,7 +25,7 @@ export default function DashboardLayout() {
   const confirmLogout = async () => {
     setIsLoggingOut(true);
     try {
-      await fetch("http://localhost:5000/api/auth/logout", {
+      await fetch(`${BASE_URL}/api/auth/logout`, {
         method: "POST",
         credentials: "include", 
       });

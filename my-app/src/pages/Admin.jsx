@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Trash2, ExternalLink, ShieldAlert, X, Loader2 } from "lucide-react";
 
 export default function AdminDashboard() {
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   
@@ -13,7 +14,7 @@ export default function AdminDashboard() {
 
   const fetchAllFiles = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/files/admin/all-files", {
+      const res = await fetch(`${BASE_URL}/api/files/admin/all-files`, {
         credentials: "include",
       });
       const data = await res.json();
@@ -37,7 +38,7 @@ export default function AdminDashboard() {
     
     setIsDeleting(true); // START LOADING
     try {
-      const res = await fetch(`http://localhost:5000/api/files/delete/${fileToDelete._id}`, {
+      const res = await fetch(`${BASE_URL}/api/files/delete/${fileToDelete._id}`, {
         method: "DELETE",
         credentials: "include",
       });
