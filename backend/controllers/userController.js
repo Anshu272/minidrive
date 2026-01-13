@@ -214,3 +214,18 @@ export const logoutController = async (req, res) => {
     res.status(500).json({ success: false, message: "Logout failed" });
   }
 };
+
+export const getMe = async (req, res) => {
+  try {
+    // authMiddleware already verified JWT & set req.user
+    res.status(200).json({
+      success: true,
+      user: req.user,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch user",
+    });
+  }
+};
