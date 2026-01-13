@@ -4,12 +4,15 @@ import { createContext, useContext, useEffect, useState } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  // init from localStorage
   const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+  
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem("user");
     return saved ? JSON.parse(saved) : null;
   });
+  
+  // ✅ ADD LOADING STATE
+  const [loading, setLoading] = useState(true);
 
   // ✅ CHECK COOKIE ON APP LOAD
   useEffect(() => {
@@ -23,7 +26,6 @@ export const AuthProvider = ({ children }) => {
           throw new Error("No valid session");
         }
 
-        // optional: sync user again
         const data = await res.json();
         setUser(data.user);
         localStorage.setItem("user", JSON.stringify(data.user));
@@ -32,6 +34,9 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem("user");
         localStorage.removeItem("token");
         setUser(null);
+      } finally {
+        // ✅ Always set loading to false after verification
+        setLoading(false);
       }
     };
 
@@ -52,7 +57,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, isAuthenticated: !!user }}
+      value={{ user, login, logout, loading, isAuthenticated: !!user }}
     >
       {children}
     </AuthContext.Provider>
