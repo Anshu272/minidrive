@@ -10,9 +10,11 @@ import {
   Menu,
   X
 } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 import { Modal } from "../components/Modal"; 
 
 export default function DashboardLayout() {
+  const {logout} = useAuth();
   const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
   const navigate = useNavigate();
   const userString = localStorage.getItem("user");
@@ -33,7 +35,7 @@ export default function DashboardLayout() {
   } catch (err) {
     console.error("Backend logout failed", err);
   } finally {
-    localStorage.clear();
+    logout();
     setIsLoggingOut(false);
     setIsLogoutModalOpen(false);
     navigate("/auth", { replace: true }); // ✅ FIX
