@@ -100,7 +100,7 @@ export default function LandingPage() {
   <span className="relative inline-block overflow-hidden group/secure align-top">
     {/* Base Layer: Outlined (Transparent) */}
     <span 
-      className="relative z-10 transition-colors duration-500 block"
+      className="relative z-10 transition-colors duration-500 mb-2 block"
       
     >
       Secure
