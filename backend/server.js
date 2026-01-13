@@ -14,10 +14,12 @@ const MONGO_URI = process.env.MONGO_URI;
 
 // 🔹 MIDDLEWARES (ORDER MATTERS)
 app.use(cors({
-  origin: "https://minidrive-two.vercel.app", 
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],// Vite frontend
-  credentials: true,               // ⭐ allow cookies
+  origin: "https://minidrive-two.vercel.app",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 }));
+app.options("*", cors()); 
 app.use(express.json());           
 app.use(cookieParser());            
 
