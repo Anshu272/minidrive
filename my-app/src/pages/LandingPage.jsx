@@ -95,10 +95,33 @@ export default function LandingPage() {
           <span className="hero-text text-yellow-400 font-mono text-[10px] tracking-[0.4em] uppercase mb-4 block">
             [ {isAuthenticated ? "ONLINE" : "READY"} ]
           </span>
-          <h1 className="hero-text font-anton text-[16vw] md:text-[12vw] leading-[0.9] uppercase mb-6 md:mb-8">
-            Secure <br /> 
-            <span className="text-transparent" style={{ WebkitTextStroke: "3px white" }}>Storage</span>
-          </h1>
+ <h1 className="hero-text font-anton text-[16vw] md:text-[12vw] leading-[0.9] uppercase mb-6 md:mb-8 cursor-default">
+  {/* The "Secure" Container with its own group hover */}
+  <span className="relative inline-block overflow-hidden group/secure align-top">
+    {/* Base Layer: Outlined (Transparent) */}
+    <span 
+      className="relative z-10 transition-colors duration-500 block"
+      
+    >
+      Secure
+    </span>
+    
+    {/* Fill Layer: Yellow text that rises up */}
+    <span 
+      className="absolute inset-0 z-20 text-yellow-400 translate-y-full group-hover/secure:translate-y-0 transition-transform duration-500 ease-out pointer-events-none"
+      style={{ WebkitTextStroke: "3px white" }} // Keep stroke so it matches the base perfectly
+    >
+      Secure
+    </span>
+  </span>
+
+  <br /> 
+
+  {/* The Storage text remains outlined and unaffected */}
+  <span className="text-transparent block" style={{ WebkitTextStroke: "3px white" }}>
+    Storage
+  </span>
+</h1>
           <div className="hero-text w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-6 md:gap-10">
              <p className="max-w-md text-zinc-400 font-mono text-[10px] md:text-xs uppercase tracking-widest leading-loose">
                A simple way to keep your files safe. Your data is encrypted and saved across our private cloud network.
