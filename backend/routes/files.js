@@ -12,7 +12,7 @@ router.post("/share/:id", authMiddleware, shareFileByEmail);
 router.get("/admin/all-files", authMiddleware, getAllFilesAdmin);
 router.delete("/revoke/:id", authMiddleware, revokeAccessController);
 router.put("/update-content/:id",authMiddleware, upload.single("file"), updateFileContent);
-router.patch("/rename/:id", renameFile);
+router.put("/rename/:id", renameFile);
 router.get("/showfile/:id",authMiddleware, viewFileController);
 router.post( "/upload", authMiddleware, upload.single("file"), uploadFile);
 router.get( "/my-files", authMiddleware, getMyFiles);
