@@ -120,7 +120,7 @@ export default function SharedFile() {
     setIsUpdating(true);
     try {
       const res = await fetch(`${BASE_URL}/api/files/rename/${id}`, {
-        method: "PUT",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ newName: renameValue }),
         credentials: "include",

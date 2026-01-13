@@ -229,6 +229,7 @@ export const revokeAccessController = async (req, res) => {
 
 export const renameFile = async (req, res) => {
   try {
+    res.send("hello")
     const { id } = req.params;
     const { newName } = req.body;
 
