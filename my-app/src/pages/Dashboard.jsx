@@ -22,22 +22,23 @@ export default function DashboardLayout() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Mobile Menu State
 
-  const confirmLogout = async () => {
-    setIsLoggingOut(true);
-    try {
-      await fetch(`${BASE_URL}/api/auth/logout`, {
-        method: "POST",
-        credentials: "include", 
-      });
-    } catch (err) {
-      console.error("Backend logout failed", err);
-    } finally {
-      localStorage.clear();
-      setIsLoggingOut(false);
-      setIsLogoutModalOpen(false);
-      window.location.href = "/auth";
-    }
-  };
+ const confirmLogout = async () => {
+  setIsLoggingOut(true);
+
+  try {
+    await fetch(`${BASE_URL}/api/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
+  } catch (err) {
+    console.error("Backend logout failed", err);
+  } finally {
+    localStorage.clear();
+    setIsLoggingOut(false);
+    setIsLogoutModalOpen(false);
+    navigate("/auth", { replace: true }); // ✅ FIX
+  }
+};
 
   const navItemClass = ({ isActive }) =>
     `flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 group ${
