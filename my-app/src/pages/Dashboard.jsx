@@ -1,46 +1,56 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react"; // Added useEffect
 import { Outlet, NavLink, Link, useNavigate } from "react-router-dom";
 import { 
-  FolderOpen, 
-  CloudUpload, 
-  ShieldCheck, 
-  LogOut, 
-  User as UserIcon,
-  LayoutGrid,
-  Menu,
-  X
+  FolderOpen, CloudUpload, ShieldCheck, LogOut, 
+  User as UserIcon, LayoutGrid, Menu, X 
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { Modal } from "../components/Modal"; 
 
 export default function DashboardLayout() {
-  const {logout} = useAuth();
-  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+  const { user, logout, loading } = useAuth(); 
   const navigate = useNavigate();
-  const userString = localStorage.getItem("user");
-  const user = userString ? JSON.parse(userString) : null;
+  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Mobile Menu State
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
- const confirmLogout = async () => {
-  setIsLoggingOut(true);
+  // ✅ 1. Safe Redirect Logic
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/auth", { replace: true });
+    }
+  }, [user, loading, navigate]);
 
-  try {
-    await fetch(`${BASE_URL}/api/auth/logout`, {
-      method: "POST",
-      credentials: "include",
-    });
-  } catch (err) {
-    console.error("Backend logout failed", err);
-  } finally {
-    logout();
-    setIsLoggingOut(false);
-    setIsLogoutModalOpen(false);
-    navigate("/auth", { replace: true }); // ✅ FIX
+  const confirmLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await fetch(`${BASE_URL}/api/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (err) {
+      console.error("Backend logout failed", err);
+    } finally {
+      logout();
+      setIsLoggingOut(false);
+      setIsLogoutModalOpen(false);
+      navigate("/auth", { replace: true });
+    }
+  };
+
+  // ✅ 2. Show Spinner while AuthContext is fetching /me
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
   }
-};
+
+  // ✅ 3. If loading is done but no user, don't render anything (useEffect handles redirect)
+  if (!user) return null;
 
   const navItemClass = ({ isActive }) =>
     `flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 group ${
@@ -59,7 +69,6 @@ export default function DashboardLayout() {
               <FolderOpen size={20} />
               <span>My Vault</span>
             </NavLink>
-
             <NavLink to="/dashboard/upload" className={navItemClass} onClick={() => setIsMobileMenuOpen(false)}>
               <CloudUpload size={20} />
               <span>Upload Files</span>
@@ -73,14 +82,14 @@ export default function DashboardLayout() {
             <nav>
               <NavLink 
                 to="/dashboard/admin" 
-                onClick={() => setIsMobileMenuOpen(false)}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-4 py-3 rounded-2xl transition-all border ${
                     isActive
-                      ? "bg-red-500 border-red-500 text-white font-bold shadow-[0_10px_20px_-5px_rgba(239,68,68,0.3)]"
-                      : "border-red-500/20 text-red-500/70 hover:bg-red-500/10 hover:text-red-500"
+                      ? "bg-red-500 border-red-500 text-white font-bold"
+                      : "border-red-500/20 text-red-500/70 hover:bg-red-500/10"
                   }`
                 }
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 <ShieldCheck size={20} />
                 <span>Admin Panel</span>
@@ -107,8 +116,13 @@ export default function DashboardLayout() {
             <UserIcon size={18} className="text-yellow-400" />
           </div>
           <div className="min-w-0">
-            <p className="text-xs font-bold text-white truncate">{user?.username || 'Guest'}</p>
-            <p className="text-[10px] text-zinc-500 truncate uppercase tracking-tighter">{user?.role || 'Member'}</p>
+            {/* ✅ Added console log here to debug if username is missing */}
+            <p className="text-xs font-bold text-white truncate">
+              {user?.username || "Unknown User"}
+            </p>
+            <p className="text-[10px] text-zinc-500 truncate uppercase tracking-tighter">
+              {user?.role || "Member"}
+            </p>
           </div>
         </div>
       </div>
@@ -117,7 +131,6 @@ export default function DashboardLayout() {
 
   return (
     <div className="min-h-screen flex bg-[#050505] text-white overflow-hidden">
-      
       <Modal 
         isOpen={isLogoutModalOpen}
         onClose={() => setIsLogoutModalOpen(false)}
@@ -135,10 +148,7 @@ export default function DashboardLayout() {
           <LayoutGrid size={18} className="text-yellow-400" />
           <span className="font-black text-sm uppercase italic tracking-tighter">Mini<span className="text-yellow-400">Drive</span></span>
         </Link>
-        <button 
-          onClick={() => setIsMobileMenuOpen(true)}
-          className="p-2 text-zinc-400 hover:text-white transition-colors"
-        >
+        <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 text-zinc-400 hover:text-white transition-colors">
           <Menu size={24} />
         </button>
       </header>

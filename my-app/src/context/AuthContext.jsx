@@ -1,4 +1,3 @@
-// context/AuthContext.jsx
 import { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext();
@@ -6,46 +5,49 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
   
+  // Initialize from localStorage so the UI feels fast
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem("user");
-    return saved ? JSON.parse(saved) : null;
+    try {
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
   });
   
-  // ✅ ADD LOADING STATE
   const [loading, setLoading] = useState(true);
 
-  // ✅ CHECK COOKIE ON APP LOAD
   useEffect(() => {
     const verifySession = async () => {
       try {
         const res = await fetch(`${BASE_URL}/api/auth/me`, {
-          credentials: "include",
+          credentials: "include", // Essential to send the HttpOnly cookie
         });
 
-        if (!res.ok) {
-          throw new Error("No valid session");
-        }
+        if (!res.ok) throw new Error("Session invalid");
 
         const data = await res.json();
+        console.log("Full Server Response:", data);
+        
+        // Sync the state with the fresh data from server
         setUser(data.user);
         localStorage.setItem("user", JSON.stringify(data.user));
       } catch (err) {
-        // ❌ cookie missing or expired → clear frontend
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
-        setUser(null);
+        // If the cookie is expired or missing, clear everything
+        console.warn("Auth verification failed:", err.message);
+        logout(); 
       } finally {
-        // ✅ Always set loading to false after verification
         setLoading(false);
       }
     };
 
     verifySession();
-  }, []);
+  }, [BASE_URL]); // Added BASE_URL as a dependency
 
   const login = (userData) => {
     localStorage.setItem("user", JSON.stringify(userData));
-    localStorage.setItem("token", userData.token);
+    if (userData.token) localStorage.setItem("token", userData.token);
+    
     setUser(userData);
   };
 
@@ -57,7 +59,13 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, loading, isAuthenticated: !!user }}
+      value={{ 
+        user, 
+        login, 
+        logout, 
+        loading, 
+        isAuthenticated: !!user 
+      }}
     >
       {children}
     </AuthContext.Provider>
