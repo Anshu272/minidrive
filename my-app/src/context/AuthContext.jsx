@@ -17,25 +17,31 @@ export const AuthProvider = ({ children }) => {
   
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+ useEffect(() => {
     const verifySession = async () => {
       try {
         const res = await fetch(`${BASE_URL}/api/auth/me`, {
-          credentials: "include", // Essential to send the HttpOnly cookie
+          credentials: "include", 
         });
 
-        if (!res.ok) throw new Error("Session invalid");
+        // 1. If everything is fine, update the user data
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.user);
+          localStorage.setItem("user", JSON.stringify(data.user));
+        } 
+        // 2. Only log out if the server EXPLICITLY says the token is invalid (401)
+        else if (res.status === 401) {
+          console.warn("Session expired on server.");
+          logout();
+        }
+        // 3. If it's a 500 error or Render is sleeping (502/504), 
+        // we DO NOTHING. We keep the 'user' from localStorage.
 
-        const data = await res.json();
-        console.log("Full Server Response:", data);
-        
-        // Sync the state with the fresh data from server
-        setUser(data.user);
-        localStorage.setItem("user", JSON.stringify(data.user));
       } catch (err) {
-        // If the cookie is expired or missing, clear everything
-        console.warn("Auth verification failed:", err.message);
-        logout(); 
+        // 4. If it's a network error (no internet or server down), 
+        // we DO NOT call logout(). We keep the UI in logged-in state.
+        console.warn("Server unreachable, keeping local session active.");
       } finally {
         setLoading(false);
       }
