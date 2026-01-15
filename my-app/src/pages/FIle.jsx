@@ -234,21 +234,31 @@ export default function SharedFile() {
   };
 
   const handleUpdatePermission = async (e) => {
-    e.preventDefault();
-    setIsUpdating(true);
-    try {
-      const res = await fetch(`${BASE_URL}/api/files/share/${id}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: newUserEmail, role: newUserRole }),
-        credentials:"include",
-      });
-      if (!res.ok) throw new Error("Failed to update permissions");
-      setNewUserEmail("");
-      fetchFile(); 
-    } catch (err) { showErrorModal(err.message); }
-    finally { setIsUpdating(false); }
-  };
+  e.preventDefault();
+  setIsUpdating(true);
+  try {
+    const res = await fetch(`${BASE_URL}/api/files/share/${id}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: newUserEmail, role: newUserRole }),
+      credentials: "include",
+    });
+
+    const data = await res.json(); // 1. Parse the response first
+
+    if (!res.ok) {
+      // 2. Use the message from the backend, or a fallback
+      throw new Error(data.message || "Failed to update permissions");
+    }
+
+    setNewUserEmail("");
+    fetchFile(); 
+  } catch (err) { 
+    showErrorModal(err.message); // 3. Now this will show "User with this email not found"
+  } finally { 
+    setIsUpdating(false); 
+  }
+};
 
   if (loading) return <div className="text-zinc-500 font-mono text-xs p-10 animate-pulse uppercase tracking-[0.2em]">Initialising_Stream...</div>;
 
