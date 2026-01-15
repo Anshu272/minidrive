@@ -358,21 +358,27 @@ export default function SharedFile() {
         </button>
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
-          <div className="space-y-1">
-            <h1 className="text-3xl font-black flex items-center gap-3 tracking-tighter uppercase italic">
-              {file?.originalName}
-              {/* Badge for Admins strictly overriding without an invited role */}
-              {isAdmin && !isOwner && !isEditor && (
-                <span className="text-[9px] bg-red-600 text-white px-2 py-0.5 rounded font-black tracking-tighter shadow-lg shadow-red-900/20">ADMIN_OVERRIDE</span>
-              )}
-            </h1>
-            <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.5)]"></div>
-              <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">
-                Permission: <span className="text-white">{getPermissionLabel()}</span>
-              </p>
-            </div>
-          </div>
+         <div className="space-y-2">
+  <h1 className="text-3xl md:text-4xl font-black tracking-tighter uppercase italic break-words leading-tight">
+    {file?.originalName}
+  </h1>
+  
+  {/* Badge moved to its own line with a separate container */}
+  {isAdmin && !isOwner && !isEditor && (
+    <div className="flex">
+      <span className="text-[10px] bg-red-600/20 border border-red-500/50 text-red-500 px-3 py-1 rounded-lg font-black tracking-[0.1em] shadow-lg uppercase">
+        System_Admin_Override
+      </span>
+    </div>
+  )}
+
+  <div className="flex items-center gap-2 pt-1">
+    <div className="w-1.5 h-1.5 rounded-full bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.5)]"></div>
+    <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">
+      Permission: <span className="text-white">{getPermissionLabel()}</span>
+    </p>
+  </div>
+</div>
 
           <div className="flex items-center gap-2 md:gap-3">
             <button 
