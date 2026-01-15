@@ -156,7 +156,7 @@ export default function MyDrive() {
                     {files.map((file) => (
                         <div
                             key={file._id}
-                            className="group relative rounded-[2rem] border border-white/5 bg-[#0a0a0a] overflow-hidden hover:border-yellow-400/30 transition-all duration-500"
+                            className="group relative rounded-[2rem] border border-white/30 bg-[#0a0a0a] overflow-hidden hover:border-yellow-400/30 transition-all duration-500"
                         >
                             {/* PREVIEW CONTAINER (Clickable for Mobile & Desktop) */}
                             <div className="relative h-48 bg-black/40 overflow-hidden">
