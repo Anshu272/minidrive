@@ -49,7 +49,7 @@ export default function Upload() {
         setFile(null);
       }
     } catch (err) {
-      setMessage("CONNECTIVITY_ERROR");
+      setMessage("UPLOAD_FAILED");
       setStatus("error");
     }
   };
@@ -120,7 +120,7 @@ export default function Upload() {
                   </div>
                   <div>
                     <p className="font-anton text-xl md:text-2xl text-white uppercase tracking-widest">Browse_Files</p>
-                    <p className="text-zinc-600 font-mono text-[9px] md:text-[10px] uppercase tracking-[0.3em] mt-2">Support: IMG_PDF</p>
+                    <p className="text-zinc-600 font-mono text-[9px] md:text-[10px] uppercase tracking-[0.3em] mt-2">Support: IMG_PDF(5mb)</p>
                   </div>
                 </div>
               ) : (
