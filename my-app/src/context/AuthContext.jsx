@@ -4,8 +4,8 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-  
-  // Initialize from localStorage so the UI feels fast
+
+  // Keep your fast UI hydration
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem("user");
     try {
@@ -14,49 +14,59 @@ export const AuthProvider = ({ children }) => {
       return null;
     }
   });
-  
+
   const [loading, setLoading] = useState(true);
 
- useEffect(() => {
+  useEffect(() => {
+    let cancelled = false;
+
     const verifySession = async () => {
       try {
         const res = await fetch(`${BASE_URL}/api/auth/me`, {
-          credentials: "include", 
+          credentials: "include",
         });
 
-        // 1. If everything is fine, update the user data
         if (res.ok) {
           const data = await res.json();
-          setUser(data.user);
-          localStorage.setItem("user", JSON.stringify(data.user));
-        } 
-        // 2. Only log out if the server EXPLICITLY says the token is invalid (401)
-        else if (res.status === 401) {
-          console.warn("Session expired on server.");
-          logout();
-        }
-        // 3. If it's a 500 error or Render is sleeping (502/504), 
-        // we DO NOTHING. We keep the 'user' from localStorage.
 
-      } catch (err) {
-        // 4. If it's a network error (no internet or server down), 
-        // we DO NOT call logout(). We keep the UI in logged-in state.
-        console.warn("Server unreachable, keeping local session active.");
+          if (!cancelled) {
+            setUser(data.user);
+            localStorage.setItem("user", JSON.stringify(data.user));
+          }
+        } 
+        // ONLY logout if server explicitly says UNAUTHORIZED
+        else if (res.status === 401) {
+          if (!cancelled) {
+            setUser(null);
+            localStorage.removeItem("user");
+          }
+        }
+        // Any other status → ignore (Render sleep, temp error)
+
+      } catch {
+        // Network error → keep local session
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     verifySession();
-  }, [BASE_URL]); // Added BASE_URL as a dependency
 
+    return () => {
+      cancelled = true;
+    };
+  }, [BASE_URL]);
+
+  // Keep same signature
   const login = (userData) => {
     localStorage.setItem("user", JSON.stringify(userData));
-    if (userData.token) localStorage.setItem("token", userData.token);
-    
+    if (userData?.token) {
+      localStorage.setItem("token", userData.token);
+    }
     setUser(userData);
   };
 
+  // Keep same signature
   const logout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
@@ -65,12 +75,12 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ 
-        user, 
-        login, 
-        logout, 
-        loading, 
-        isAuthenticated: !!user 
+      value={{
+        user,
+        login,
+        logout,
+        loading,
+        isAuthenticated: !!user,
       }}
     >
       {children}
