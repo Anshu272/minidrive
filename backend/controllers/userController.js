@@ -44,8 +44,7 @@ export const signupController = async (req, res) => {
       sameSite: "none",
       secure:true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: "/",
-  partitioned: true
+      path: "/"
     }).status(201).json({
       message: "Signup successful",
       user: {
@@ -88,8 +87,7 @@ export const loginController = async (req, res) => {
       sameSite: "none",
       secure:true,
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: "/",
-  partitioned: true
+      path: "/"
     }).status(200).json({
       message: "Login successful",
       user: {
@@ -206,8 +204,7 @@ export const logoutController = async (req, res) => {
       httpOnly: true,
       sameSite: "none", // matched from login
       secure:true, // matched from login
-      path: "/", 
-  partitioned: true
+      path: "/"
     });
 
     return res.status(200).json({
