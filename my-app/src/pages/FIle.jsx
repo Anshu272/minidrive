@@ -391,7 +391,7 @@ export default function SharedFile() {
               <div className="w-24 h-24 bg-zinc-900 rounded-[2rem] flex items-center justify-center border border-white/5 shadow-inner">
                 <span className="text-3xl text-zinc-600 font-mono font-black uppercase">.{file?.mimeType?.split('/')[1] || 'DATA'}</span>
               </div>
-              <a href={file.url} target="_blank" rel="noreferrer" className="bg-zinc-800 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] border border-white/5 hover:border-yellow-400 transition-all hover:shadow-[0_0_20px_rgba(250,204,21,0.15)]">Download_Archive</a>
+              <a href={file.url} target="_blank" rel="noreferrer" className="bg-zinc-800 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] border border-white/5 hover:border-yellow-400 transition-all hover:shadow-[0_0_20px_rgba(250,204,21,0.15)]">Open</a>
             </div>
           )}
         </div>

@@ -9,13 +9,25 @@ export default function Upload() {
   const fileInputRef = useRef(null);
 
   const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-      setStatus("idle");
-      setMessage("");
+  const selectedFile = e.target.files[0];
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+  if (selectedFile) {
+    if (selectedFile.size > MAX_FILE_SIZE) {
+      // 🔴 Show size error immediately
+      setMessage("FILE_TOO_LARGE: MAX 5MB ALLOWED");
+      setStatus("error");
+      setFile(null); // Clear the selection
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
     }
-  };
+
+    // ✅ File is valid
+    setFile(selectedFile);
+    setStatus("idle");
+    setMessage("");
+  }
+};
 
   const removeFile = (e) => {
     e.stopPropagation();
