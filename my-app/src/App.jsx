@@ -3,8 +3,6 @@ import { ProtectedRoute, GuestRoute } from "./components/GuardRoutes"; // Import
 /* ... keep your other imports ... */
 import LandingPage from "./pages/LandingPage";
 import Auth from "./pages/Auth";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
 import Upload from "./pages/Upload";
 import DashboardLayout from "./pages/Dashboard";
 
@@ -27,8 +25,6 @@ function App() {
       {/* 🔒 Guest only: If logged in, they get sent to /dashboard */}
       <Route element={<GuestRoute />}>
         <Route path="/auth" element={<Auth />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password/:token" element={<ResetPassword />} />
       </Route>
 
       {/* 🔐 Protected: If NOT logged in, they get sent to /auth */}

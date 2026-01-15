@@ -45,7 +45,7 @@ export default function Auth() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setSuccess(""); // Reset success on new attempt
+    setSuccess(""); 
     setIsLoading(true);
 
     try {
@@ -232,9 +232,6 @@ export default function Auth() {
                 />
                 {mode === "login" && (
                   <div className="absolute right-2 bottom-4">
-                    <Link to="/forgot-password" size="tiny" className="text-[10px] font-mono uppercase text-zinc-500 hover:text-yellow-400 transition-colors">
-                      Forgot?
-                    </Link>
                   </div>
                 )}
               </div>
