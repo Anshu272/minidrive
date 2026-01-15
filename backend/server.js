@@ -19,7 +19,10 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
-app.options("/api/files/*", cors());
+
+// ✅ FIXED: Changed '*' to ':path*' for Express 5 / Node 22 compatibility
+app.options("/api/files/:path*", cors());
+
 app.use(express.json());           
 app.use(cookieParser());            
 
