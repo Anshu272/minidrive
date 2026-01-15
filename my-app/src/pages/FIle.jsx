@@ -242,6 +242,35 @@ export default function SharedFile() {
     } catch (err) { showErrorModal(err.message); }
     finally { setIsUpdating(false); }
   };
+  const handleDownload = async (e) => {
+  e.preventDefault();
+  setIsUpdating(true); // Show a loading state if you have one
+  try {
+    const response = await fetch(file.url);
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    
+    const link = document.createElement("a");
+    link.href = url;
+    
+    // This forces the correct name
+    const fileName = file.originalName.toLowerCase().endsWith(".pdf") 
+      ? file.originalName 
+      : `${file.originalName}.pdf`;
+      
+    link.setAttribute("download", fileName);
+    document.body.appendChild(link);
+    link.click();
+    
+    // Cleanup memory
+    link.parentNode.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (err) {
+    showErrorModal("Download failed. The file might be restricted.");
+  } finally {
+    setIsUpdating(false);
+  }
+};
 
   const handleUpdatePermission = async (e) => {
   e.preventDefault();
@@ -391,7 +420,13 @@ export default function SharedFile() {
               <div className="w-24 h-24 bg-zinc-900 rounded-[2rem] flex items-center justify-center border border-white/5 shadow-inner">
                 <span className="text-3xl text-zinc-600 font-mono font-black uppercase">.{file?.mimeType?.split('/')[1] || 'DATA'}</span>
               </div>
-              <a href={file.url} target="_blank" rel="noreferrer" className="bg-zinc-800 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] border border-white/5 hover:border-yellow-400 transition-all hover:shadow-[0_0_20px_rgba(250,204,21,0.15)]">Open</a>
+<button 
+  onClick={handleDownload} 
+  disabled={isUpdating}
+  className="bg-zinc-800 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] border border-white/5 hover:border-yellow-400 transition-all hover:shadow-[0_0_20px_rgba(250,204,21,0.15)] disabled:opacity-50"
+>
+  {isUpdating ? "PREPARING_DATA..." : "Open"}
+</button>
             </div>
           )}
         </div>
