@@ -14,7 +14,7 @@ const MONGO_URI = process.env.MONGO_URI;
 
 // 🔹 MIDDLEWARES (ORDER MATTERS)
 app.use(cors({
-  origin: "https://minidrive-two.vercel.app",
+  origin:[ "https://minidrive-two.vercel.app","http://localhost:5173"],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],

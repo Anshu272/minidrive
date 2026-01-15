@@ -3,73 +3,78 @@ import { createContext, useContext, useEffect, useState } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+  const BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-  // Keep your fast UI hydration
-  const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem("user");
-    try {
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
-  });
 
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    let cancelled = false;
+ useEffect(() => {
+  let cancelled = false;
 
-    const verifySession = async () => {
-      try {
-        const res = await fetch(`${BASE_URL}/api/auth/me`, {
-          credentials: "include",
-        });
+  const verifySession = async () => {
+    const token = localStorage.getItem("token");
 
-        if (res.ok) {
-          const data = await res.json();
-
-          if (!cancelled) {
-            setUser(data.user);
-            localStorage.setItem("user", JSON.stringify(data.user));
-          }
-        } 
-        // ONLY logout if server explicitly says UNAUTHORIZED
-        else if (res.status === 401) {
-          if (!cancelled) {
-            setUser(null);
-            localStorage.removeItem("user");
-          }
-        }
-        // Any other status → ignore (Render sleep, temp error)
-
-      } catch {
-        // Network error → keep local session
-      } finally {
-        if (!cancelled) setLoading(false);
+    if (!token) {
+      if (!cancelled) {
+        setUser(null);
+        setLoading(false);
       }
-    };
-
-    verifySession();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [BASE_URL]);
-
-  // Keep same signature
-  const login = (userData) => {
-    localStorage.setItem("user", JSON.stringify(userData));
-    if (userData?.token) {
-      localStorage.setItem("token", userData.token);
+      return;
     }
-    setUser(userData);
+
+    try {
+      const res = await fetch(`${BASE_URL}/api/auth/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // 🔥 ONLY logout on 401
+      if (res.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        if (!cancelled) setUser(null);
+        return;
+      }
+
+      // Other errors (server down, cold start) → keep session
+      if (!res.ok) {
+        return;
+      }
+
+      const data = await res.json();
+
+      if (!cancelled) {
+        setUser(data.user);
+        localStorage.setItem("user", JSON.stringify(data.user));
+      }
+    } catch {
+      // 🔥 Network error → DO NOT logout
+      // Keep user logged in
+    } finally {
+      if (!cancelled) setLoading(false);
+    }
   };
 
-  // Keep same signature
+  verifySession();
+
+  return () => {
+    cancelled = true;
+  };
+}, [BASE_URL]);
+
+
+  const login = ({ user, token }) => {
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+    setUser(user);
+  };
+
   const logout = () => {
-    localStorage.removeItem("user");
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setUser(null);
   };
 

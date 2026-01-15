@@ -36,7 +36,9 @@ export default function MyDrive() {
     const fetchFiles = async () => {
         try {
             const res = await fetch(`${BASE_URL}/api/files/my-files`, {
-                credentials: "include",
+               headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.message || "Failed to load files");
@@ -56,7 +58,9 @@ export default function MyDrive() {
         try {
             const res = await fetch(`${BASE_URL}/api/files/delete/${id}`, {
                 method: "DELETE",
-                credentials: "include",
+                headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
             });
             if (!res.ok) throw new Error("Delete failed");
             setFiles((prev) => prev.filter((file) => file._id !== id));

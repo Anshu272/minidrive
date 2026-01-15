@@ -172,6 +172,9 @@ export const shareFileByEmail = async (req, res) => {
     if (!userToShareWith) {
       return res.status(404).json({ message: "User with this email not found" });
     }
+    if (userToShareWith._id.toString() === ownerId.toString()) {
+      return res.status(400).json({ message: "You cannot share a file with yourself" });
+    }
 
     // 2. Find the file
     const file = await File.findById(fileId);
@@ -229,7 +232,6 @@ export const revokeAccessController = async (req, res) => {
 
 export const renameFile = async (req, res) => {
   try {
-    res.send("hello")
     const { id } = req.params;
     const { newName } = req.body;
 

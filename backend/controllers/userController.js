@@ -39,21 +39,17 @@ export const signupController = async (req, res) => {
 
     const token = generateToken({ id: user._id, role: user.role });
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      sameSite: "none",
-      secure:true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: "/"
-    }).status(201).json({
-      message: "Signup successful",
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-      },
-    });
+res.status(201).json({
+  message: "Signup successful",
+  token, // 👈 send token in response body
+  user: {
+    id: user._id,
+    username: user.username,
+    email: user.email,
+    role: user.role,
+  },
+});
+
   } catch (err) {
     res.status(500).json({ message: "Signup failed" });
   }
@@ -82,22 +78,19 @@ export const loginController = async (req, res) => {
 
     const token = generateToken({ id: user._id, role: user.role });
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      sameSite: "none",
-      secure:true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      path: "/"
-    }).status(200).json({
-      message: "Login successful",
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-      },
-    });
+ res.status(201).json({
+  message: "Signup successful",
+  token, // 👈 send token in response body
+  user: {
+    id: user._id,
+    username: user.username,
+    email: user.email,
+    role: user.role,
+  },
+});
+
   } catch (err) {
+   
     res.status(500).json({ message: "Login failed" });
   }
 };
@@ -196,26 +189,7 @@ export const resetPasswordController = async (req, res) => {
   }
 };
 
-export const logoutController = async (req, res) => {
-  try {
-    // We MUST match the settings from login exactly:
-    // Login used: httpOnly: true, sameSite: "strict", secure: process.env...
-    res.clearCookie("token", {
-      httpOnly: true,
-      sameSite: "none", // matched from login
-      secure:true, // matched from login
-      path: "/"
-    });
 
-    return res.status(200).json({
-      success: true,
-      message: "Logged out successfully",
-    });
-  } catch (error) {
-    console.error("Logout error:", error);
-    res.status(500).json({ success: false, message: "Logout failed" });
-  }
-};
 
 export const getMe = async (req, res) => {
   try {

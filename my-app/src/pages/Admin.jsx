@@ -14,7 +14,9 @@ export default function AdminDashboard() {
   const fetchAllFiles = async () => {
     try {
       const res = await fetch(`${BASE_URL}/api/files/admin/all-files`, {
-        credentials: "include",
+        headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
       });
       const data = await res.json();
       setFiles(data.files || []);
@@ -38,7 +40,9 @@ export default function AdminDashboard() {
     try {
       const res = await fetch(`${BASE_URL}/api/files/delete/${fileToDelete._id}`, {
         method: "DELETE",
-        credentials: "include",
+        headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
       });
       
       if (res.ok) {

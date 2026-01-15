@@ -49,7 +49,9 @@ export default function SharedFile() {
   const fetchFile = async () => {
     try {
       const res = await fetch(`${BASE_URL}/api/files/showfile/${id}`, {
-        credentials: "include",
+        headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
       });
       if (res.status === 401) return navigate("/auth");
       const data = await res.json();
@@ -121,9 +123,11 @@ export default function SharedFile() {
     try {
       const res = await fetch(`${BASE_URL}/api/files/rename/${id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json",
+           Authorization: `Bearer ${localStorage.getItem("token")}`,
+         },
         body: JSON.stringify({ newName: renameValue }),
-        credentials: "include",
+
       });
       if (!res.ok) throw new Error("Rename failed");
       await fetchFile();
@@ -138,7 +142,9 @@ export default function SharedFile() {
     try {
       const res = await fetch(`${BASE_URL}/api/files/delete/${id}`, {
         method: "DELETE",
-        credentials: "include",
+        headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Delete failed");
@@ -155,9 +161,11 @@ export default function SharedFile() {
     try {
       const res = await fetch(`${BASE_URL}/api/files/revoke/${id}`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" ,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
         body: JSON.stringify({ userId: targetRevokeId }),
-        credentials: "include",
+
       });
       if (!res.ok) throw new Error("Revoke failed");
       await fetchFile();
@@ -225,7 +233,9 @@ export default function SharedFile() {
       const res = await fetch(`${BASE_URL}/api/files/update-content/${id}`, {
         method: "PUT",
         body: formData,
-        credentials: "include",
+        headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
       });
       if (!res.ok) throw new Error("Update failed");
       fetchFile();
@@ -239,9 +249,10 @@ export default function SharedFile() {
   try {
     const res = await fetch(`${BASE_URL}/api/files/share/${id}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json",
+           Authorization: `Bearer ${localStorage.getItem("token")}`,
+       },
       body: JSON.stringify({ email: newUserEmail, role: newUserRole }),
-      credentials: "include",
     });
 
     const data = await res.json(); // 1. Parse the response first

@@ -35,7 +35,9 @@ export default function Upload() {
       const res = await fetch(`${BASE_URL}/api/files/upload`, {
         method: "POST",
         body: formData,
-        credentials: "include",
+        headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
       });
 
       const data = await res.json();

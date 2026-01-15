@@ -14,33 +14,19 @@ import { useAuth } from "../context/AuthContext";
 import { Modal } from "../components/Modal"; 
 
 export default function DashboardLayout() {
-  const {logout} = useAuth();
+  const {user,logout} = useAuth();
   const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
   const navigate = useNavigate();
-  const userString = localStorage.getItem("user");
-  const user = userString ? JSON.parse(userString) : null;
-
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Mobile Menu State
 
- const confirmLogout = async () => {
-  setIsLoggingOut(true);
-
-  try {
-    await fetch(`${BASE_URL}/api/auth/logout`, {
-      method: "POST",
-      credentials: "include",
-    });
-  } catch (err) {
-    console.error("Backend logout failed", err);
-  } finally {
-    logout();
-    setIsLoggingOut(false);
-    setIsLogoutModalOpen(false);
-    navigate("/auth", { replace: true }); // ✅ FIX
-  }
+const confirmLogout = () => {
+  logout();
+  setIsLogoutModalOpen(false);
+  navigate("/auth", { replace: true });
 };
+
 
   const navItemClass = ({ isActive }) =>
     `flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 group ${

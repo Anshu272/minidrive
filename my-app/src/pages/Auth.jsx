@@ -59,8 +59,9 @@ export default function Auth() {
 
       const res = await fetch(endpoint, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
+        headers: { "Content-Type": "application/json" ,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
         body: JSON.stringify(payload),
       });
 
@@ -72,7 +73,11 @@ export default function Auth() {
       } else {
         // SUCCESSFUL LOGIN/SIGNUP
         setSuccess(mode === "signup" ? "ACCOUNT_CREATED" : "ACCESS_GRANTED");
-        login(data.user); 
+        login({
+  user: data.user,
+  token: data.token,
+});
+
         // Delay navigation so the user sees the success state
         setTimeout(() => navigate("/dashboard"), 1200);
       }
