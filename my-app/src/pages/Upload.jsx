@@ -76,13 +76,13 @@ export default function Upload() {
               {/* Responsive Text Sizes: text-5xl on mobile, text-7xl on desktop */}
               <h2 className="text-5xl md:text-7xl font-anton text-white leading-[0.9] uppercase italic">
                 Ready to <br />
-                <span className="text-yellow-400">Sync?</span>
+                <span className="text-yellow-400">Upload?</span>
               </h2>
             </header>
             
-            <p className="text-zinc-500 font-mono text-[10px] md:text-xs leading-loose uppercase tracking-widest max-w-sm">
-              Fragment and encrypt your data. We support high-fidelity images and document PDFs. All shards are distributed across the private mesh.
-            </p>
+         <p className="hidden md:block text-zinc-500 font-mono text-[10px] md:text-xs leading-loose uppercase tracking-widest max-w-sm">
+  Fragment and encrypt your data. We support high-fidelity images and document PDFs. All shards are distributed across the private mesh.
+</p>
             
             {/* Wrap metrics on small screens */}
             <div className="flex flex-wrap items-center gap-4 md:gap-8 pt-4 border-t border-white/5 uppercase font-mono text-[9px] md:text-[10px] text-zinc-600 tracking-widest">
