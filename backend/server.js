@@ -21,7 +21,7 @@ app.use(cors({
 }));
 
 // ✅ FIXED: Changed '*' to ':path*' for Express 5 / Node 22 compatibility
-app.options("/api/files/*splat*", cors());
+app.options("/api/files/*splat", cors());
 
 app.use(express.json());           
 app.use(cookieParser());            
