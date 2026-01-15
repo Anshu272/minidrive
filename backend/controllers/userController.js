@@ -23,10 +23,14 @@ export const signupController = async (req, res) => {
       $or: [{ email: normalizedEmail }, { username }],
     });
 
-    if (existingUser) {
-      return res
-        .status(409)
-        .json({ message: "Email or username already exists" });
+   if (existingUser) {
+      // Check which field matched
+      if (existingUser.email === normalizedEmail) {
+        return res.status(409).json({ message: "Email is already registered" });
+      }
+      if (existingUser.username === username) {
+        return res.status(409).json({ message: "Username is already taken" });
+      }
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
